@@ -61,7 +61,7 @@ function normalize(source: SourceConfig, entry: Parser.Item): NewItem | null {
 export async function collectSources(
 	storage: StoragePort,
 	sources: SourceConfig[],
-	timeoutMs = 20000,
+	timeoutMs = 30000,
 ): Promise<CollectResult[]> {
 	const parser = new Parser({
 		timeout: timeoutMs,
