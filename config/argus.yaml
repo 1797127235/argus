@@ -107,6 +107,46 @@ sources:
     type: rss
     url: https://magazine.sebastianraschka.com/feed
     enabled: true
+  - id: eugeneyan
+    name: Eugene Yan（应用 ML/LLM）
+    type: rss
+    url: https://eugeneyan.com/rss/
+    enabled: true
+  - id: huyenchip
+    name: Chip Huyen（AI 工程）
+    type: rss
+    url: https://huyenchip.com/feed.xml
+    enabled: true
+  - id: hamel
+    name: Hamel Husain（LLM 评估与落地）
+    type: rss
+    url: https://hamel.dev/index.xml
+    enabled: true
+  - id: latentspace
+    name: Latent Space（AI 工程深度内容）
+    type: rss
+    url: https://www.latent.space/feed
+    enabled: true
+  - id: jxnl
+    name: Jason Liu（RAG/结构化输出落地）
+    type: rss
+    url: https://jxnl.co/feed_rss_created.xml
+    enabled: true
+  - id: x-dotey
+    name: X @dotey（宝玉 · AI 落地实践）
+    type: rss
+    url: https://rsshub.antest.cc.cd/twitter/user/dotey
+    enabled: true
+  - id: x-guizang
+    name: X @op7418（歸藏 · AIGC 工具实测）
+    type: rss
+    url: https://rsshub.antest.cc.cd/twitter/user/op7418
+    enabled: true
+  - id: x-huasheng
+    name: X @AlchainHust（花生 · AI 编程落地）
+    type: rss
+    url: https://rsshub.antest.cc.cd/twitter/user/AlchainHust
+    enabled: true
 
 schedule:
   # 采集 + 分析的轮询间隔（分钟）
