@@ -57,6 +57,11 @@ sources:
     type: rss
     url: https://www.totaltypescript.com/rss.xml
     enabled: true
+  - id: x-mattpocock
+    name: X @mattpocockuk
+    type: rss
+    url: https://rsshub.antest.cc.cd/twitter/user/mattpocockuk
+    enabled: true
 
 schedule:
   # 采集 + 分析的轮询间隔（分钟）
