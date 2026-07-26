@@ -1,0 +1,11 @@
+{
+  "name": "@argus/core",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Argus 领域类型与端口接口（零依赖）",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

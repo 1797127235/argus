@@ -1,0 +1,73 @@
+# Argus 主配置：信息源、调度、分析行为、Web 服务
+# 模型密钥不在这里，放 .env（见 .env.example）
+
+sources:
+  - id: hn-best
+    name: Hacker News 精选
+    type: rss
+    url: https://hnrss.org/best
+    enabled: true
+  - id: simonwillison
+    name: Simon Willison（AI 工程）
+    type: rss
+    url: https://simonwillison.net/atom/everything/
+    enabled: true
+  - id: arstechnica
+    name: Ars Technica
+    type: rss
+    url: https://feeds.arstechnica.com/arstechnica/index
+    enabled: true
+  - id: theverge
+    name: The Verge
+    type: rss
+    url: https://www.theverge.com/rss/index.xml
+    enabled: true
+  - id: mit-tr
+    name: MIT 科技评论
+    type: rss
+    url: https://www.technologyreview.com/feed/
+    enabled: true
+  - id: huggingface
+    name: Hugging Face 博客
+    type: rss
+    url: https://huggingface.co/blog/feed.xml
+    enabled: true
+  - id: sspai
+    name: 少数派
+    type: rss
+    url: https://sspai.com/feed
+    enabled: true
+  - id: 36kr
+    name: 36氪
+    type: rss
+    url: https://36kr.com/feed
+    enabled: true
+  - id: infoq-cn
+    name: InfoQ 中文
+    type: rss
+    url: https://www.infoq.cn/feed
+    enabled: true
+
+schedule:
+  # 采集 + 分析的轮询间隔（分钟）
+  collectIntervalMinutes: 60
+  # 每天生成简报的时刻（可配多个）
+  briefTimes:
+    - "09:00"
+    - "21:00"
+  # 免打扰时段（预留给未来的即时警报通道）
+  quietHours:
+    start: "23:30"
+    end: "08:00"
+
+analysis:
+  # Analyst 单批处理条目上限
+  batchSize: 60
+  # 传给模型的条目摘要截断长度（字符）
+  excerptLength: 400
+  # 达到该评分视为重大事件（预留给即时警报）
+  alertThreshold: 9
+
+server:
+  host: 127.0.0.1
+  port: 8787

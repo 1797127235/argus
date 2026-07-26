@@ -1,0 +1,21 @@
+{
+  "name": "@argus/server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "组装根：CLI 入口、配置驱动调度器、监控 API、静态托管",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@argus/agents": "*",
+    "@argus/collector": "*",
+    "@argus/core": "*",
+    "@argus/storage": "*",
+    "@hono/node-server": "^1.13.0",
+    "croner": "^9.0.0",
+    "hono": "^4.6.0",
+    "yaml": "^2.6.0"
+  }
+}

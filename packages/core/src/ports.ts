@@ -1,0 +1,74 @@
+import type {
+	AgentRunLog,
+	Brief,
+	FeedbackEntry,
+	Item,
+	NewItem,
+	SourceHealth,
+	Story,
+	StoryStatus,
+	StoryWithItems,
+} from "./types.js";
+
+/**
+ * 存储端口：所有持久化操作的唯一入口。
+ * core 只定义接口，具体实现（SQLite）在 @argus/storage；
+ * collector 与 agents 只依赖本接口，不认识任何数据库。
+ */
+export interface StoragePort {
+	// ---- 条目 ----
+	/** 批量插入，源内按 guid 去重，返回实际新增数 */
+	insertItems(items: NewItem[]): number;
+	/** 未分析条目（按发布时间升序），供 Analyst 消化 */
+	listPendingItems(limit: number): Item[];
+	countPendingItems(): number;
+	getItems(ids: number[]): Item[];
+	markItemsAnalyzed(ids: number[]): void;
+	/** 把某个源的全部未分析条目直接标记为已分析（静默基线用） */
+	markSourceAnalyzed(sourceId: string): void;
+	sourceItemCount(sourceId: string): number;
+
+	// ---- 事件 ----
+	listActiveStories(): Story[];
+	listStories(limit: number): Story[];
+	getStory(id: number): Story | null;
+	getStoryWithItems(id: number): StoryWithItems | null;
+	createStory(input: { title: string; summary: string; status: StoryStatus; score: number }): Story;
+	updateStory(
+		id: number,
+		patch: Partial<{ title: string; summary: string; status: StoryStatus; score: number }>,
+	): void;
+	attachItemsToStory(storyId: number, itemIds: number[]): void;
+	listStoriesUpdatedSince(iso: string): Story[];
+
+	// ---- 简报 ----
+	saveBrief(content: string, storyIds: number[]): Brief;
+	listBriefs(limit: number): Brief[];
+	getBrief(id: number): Brief | null;
+	lastBriefAt(): string | null;
+
+	// ---- 反馈 ----
+	addFeedback(storyId: number, verdict: "up" | "down", comment: string | null): void;
+	listRecentFeedback(limit: number): (FeedbackEntry & { storyTitle: string })[];
+
+	// ---- 源健康 ----
+	recordFetch(sourceId: string, ok: boolean, error: string | null): void;
+	listSourceHealth(): SourceHealth[];
+
+	// ---- agent 运行记录 ----
+	addAgentRun(run: Omit<AgentRunLog, "id">): void;
+	listAgentRuns(limit: number): AgentRunLog[];
+
+	close(): void;
+}
+
+/**
+ * 推送通道端口（悬置中）：通道未定，先只定义接口。
+ * 将来 Telegram/Apprise/邮件等实现该接口即可接入，核心管线不改。
+ */
+export interface ChannelPort {
+	/** 推送一期简报 */
+	sendBrief(brief: Brief): Promise<void>;
+	/** 推送重大事件警报 */
+	sendAlert(story: Story, reason: string): Promise<void>;
+}

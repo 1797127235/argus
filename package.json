@@ -1,0 +1,22 @@
+{
+  "name": "argus",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Argus —— 基于 pi 的个人信息监控智能体",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "argus": "tsx packages/server/src/index.ts",
+    "serve": "tsx packages/server/src/index.ts serve",
+    "dev:web": "npm run dev --workspace @argus/web",
+    "build:web": "npm run build --workspace @argus/web",
+    "check": "tsc -p tsconfig.node.json --noEmit && npm run check --workspace @argus/web"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}

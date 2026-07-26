@@ -1,0 +1,460 @@
+/* Argus 监控台 —— 深色主题 */
+:root {
+	--bg: #0f1115;
+	--bg-panel: #171a21;
+	--bg-hover: #1f242e;
+	--border: #2a2f3a;
+	--text: #d8dde6;
+	--text-dim: #8b93a1;
+	--accent: #5aa9e6;
+	--good: #6ecb8f;
+	--bad: #e6737d;
+	--warn: #e6b455;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	background: var(--bg);
+	color: var(--text);
+	font-family: "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", system-ui, sans-serif;
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+.layout {
+	display: flex;
+	min-height: 100vh;
+}
+
+/* 侧栏 */
+.sidebar {
+	width: 200px;
+	flex-shrink: 0;
+	border-right: 1px solid var(--border);
+	padding: 20px 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	position: sticky;
+	top: 0;
+	height: 100vh;
+}
+
+.logo {
+	font-size: 20px;
+	font-weight: 700;
+	letter-spacing: 1px;
+	padding: 0 8px;
+}
+
+.logo-eye {
+	color: var(--accent);
+}
+
+.nav-item {
+	display: block;
+	width: 100%;
+	text-align: left;
+	background: none;
+	border: none;
+	color: var(--text-dim);
+	font-size: 14px;
+	padding: 9px 12px;
+	border-radius: 8px;
+	cursor: pointer;
+}
+
+.nav-item:hover {
+	background: var(--bg-hover);
+	color: var(--text);
+}
+
+.nav-item.active {
+	background: var(--bg-hover);
+	color: var(--accent);
+	font-weight: 600;
+}
+
+.overview {
+	margin-top: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 0 8px;
+}
+
+.stat {
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+}
+
+.stat-num {
+	font-size: 20px;
+	font-weight: 700;
+	color: var(--accent);
+}
+
+.stat-label {
+	color: var(--text-dim);
+	font-size: 12px;
+}
+
+/* 主区 */
+.content {
+	flex: 1;
+	padding: 24px 28px;
+	max-width: 1100px;
+}
+
+.empty {
+	color: var(--text-dim);
+	padding: 40px 0;
+}
+
+/* 简报 */
+.briefs {
+	display: flex;
+	gap: 20px;
+	align-items: flex-start;
+}
+
+.brief-list {
+	width: 240px;
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.brief-item {
+	text-align: left;
+	background: var(--bg-panel);
+	border: 1px solid var(--border);
+	border-radius: 10px;
+	padding: 10px 12px;
+	cursor: pointer;
+	color: var(--text);
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.brief-item.active {
+	border-color: var(--accent);
+}
+
+.brief-title {
+	font-weight: 600;
+}
+
+.brief-meta {
+	font-size: 12px;
+	color: var(--text-dim);
+}
+
+.brief-content {
+	flex: 1;
+	background: var(--bg-panel);
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	padding: 24px 28px;
+	overflow-x: auto;
+}
+
+/* Markdown 渲染 */
+.markdown h1 {
+	font-size: 22px;
+	margin-bottom: 12px;
+}
+
+.markdown h2 {
+	font-size: 17px;
+	margin: 20px 0 8px;
+	padding-top: 12px;
+	border-top: 1px solid var(--border);
+}
+
+.markdown h3 {
+	font-size: 15px;
+	margin: 14px 0 6px;
+}
+
+.markdown p,
+.markdown li {
+	margin-bottom: 6px;
+	color: var(--text);
+}
+
+.markdown ul,
+.markdown ol {
+	padding-left: 22px;
+}
+
+.markdown a {
+	color: var(--accent);
+	text-decoration: none;
+}
+
+.markdown a:hover {
+	text-decoration: underline;
+}
+
+/* 事件 */
+.stories {
+	display: flex;
+	gap: 20px;
+	align-items: flex-start;
+}
+
+.story-list {
+	width: 320px;
+	flex-shrink: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	max-height: calc(100vh - 60px);
+	overflow-y: auto;
+}
+
+.story-item {
+	text-align: left;
+	background: var(--bg-panel);
+	border: 1px solid var(--border);
+	border-radius: 10px;
+	padding: 10px 12px;
+	cursor: pointer;
+	color: var(--text);
+}
+
+.story-item.active {
+	border-color: var(--accent);
+}
+
+.story-head {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-bottom: 4px;
+}
+
+.story-title {
+	font-weight: 600;
+}
+
+.story-time {
+	margin-left: auto;
+	font-size: 12px;
+	color: var(--text-dim);
+}
+
+.score {
+	font-weight: 700;
+	font-size: 12px;
+	padding: 1px 7px;
+	border-radius: 6px;
+}
+
+.score.high {
+	background: rgba(230, 115, 125, 0.15);
+	color: var(--bad);
+}
+
+.score.mid {
+	background: rgba(230, 180, 85, 0.15);
+	color: var(--warn);
+}
+
+.score.low {
+	background: rgba(139, 147, 161, 0.15);
+	color: var(--text-dim);
+}
+
+.status {
+	font-size: 12px;
+	padding: 1px 7px;
+	border-radius: 6px;
+	background: var(--bg-hover);
+	color: var(--text-dim);
+}
+
+.status.emerging {
+	color: var(--good);
+}
+
+.status.developing {
+	color: var(--accent);
+}
+
+.story-detail {
+	flex: 1;
+	background: var(--bg-panel);
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	padding: 24px 28px;
+}
+
+.story-detail h2 {
+	font-size: 19px;
+	margin-bottom: 8px;
+}
+
+.story-summary {
+	margin: 12px 0;
+}
+
+.story-detail h3 {
+	margin: 18px 0 8px;
+	font-size: 14px;
+	color: var(--text-dim);
+}
+
+.feedback {
+	display: flex;
+	gap: 10px;
+	margin: 10px 0;
+}
+
+.feedback button {
+	background: var(--bg-hover);
+	border: 1px solid var(--border);
+	color: var(--text);
+	border-radius: 8px;
+	padding: 6px 14px;
+	cursor: pointer;
+}
+
+.feedback button:hover {
+	border-color: var(--accent);
+}
+
+.feedback-done {
+	color: var(--text-dim);
+	font-size: 13px;
+}
+
+.timeline {
+	list-style: none;
+}
+
+.timeline li {
+	padding: 8px 0;
+	border-bottom: 1px solid var(--border);
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+}
+
+.timeline-time {
+	font-size: 12px;
+	color: var(--text-dim);
+}
+
+.timeline a {
+	color: var(--text);
+	text-decoration: none;
+}
+
+.timeline a:hover {
+	color: var(--accent);
+}
+
+/* 表格（信息源） */
+.table {
+	width: 100%;
+	border-collapse: collapse;
+	background: var(--bg-panel);
+	border: 1px solid var(--border);
+	border-radius: 12px;
+	overflow: hidden;
+}
+
+.table th,
+.table td {
+	text-align: left;
+	padding: 10px 14px;
+	border-bottom: 1px solid var(--border);
+}
+
+.table th {
+	color: var(--text-dim);
+	font-weight: 500;
+	font-size: 13px;
+}
+
+.table a {
+	color: var(--text);
+	text-decoration: none;
+}
+
+.table a:hover {
+	color: var(--accent);
+}
+
+.good {
+	color: var(--good);
+}
+
+.bad {
+	color: var(--bad);
+}
+
+.muted {
+	color: var(--text-dim);
+}
+
+/* 运行记录 */
+.runs {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.run-item {
+	background: var(--bg-panel);
+	border: 1px solid var(--border);
+	border-radius: 10px;
+	padding: 12px 16px;
+}
+
+.run-head {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	margin-bottom: 4px;
+	font-size: 13px;
+}
+
+.role {
+	font-weight: 600;
+	padding: 1px 8px;
+	border-radius: 6px;
+	font-size: 12px;
+}
+
+.role.analyst {
+	background: rgba(90, 169, 230, 0.15);
+	color: var(--accent);
+}
+
+.role.editor {
+	background: rgba(110, 203, 143, 0.15);
+	color: var(--good);
+}
+
+@media (max-width: 900px) {
+	.briefs,
+	.stories {
+		flex-direction: column;
+	}
+
+	.brief-list,
+	.story-list {
+		width: 100%;
+	}
+}

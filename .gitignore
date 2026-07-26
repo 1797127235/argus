@@ -1,0 +1,13 @@
+# 依赖与构建产物
+node_modules/
+packages/web/dist/
+
+# 运行时数据（数据库、简报文件）
+data/
+
+# 密钥，绝不入库
+.env
+
+# 杂项
+*.log
+.DS_Store

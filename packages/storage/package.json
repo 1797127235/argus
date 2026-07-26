@@ -1,0 +1,14 @@
+{
+  "name": "@argus/storage",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "存储端口的 SQLite 实现（node:sqlite，无原生依赖）",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@argus/core": "*"
+  }
+}
