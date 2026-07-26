@@ -116,6 +116,19 @@ export class SqliteStorage implements StoragePort {
 			.run(now(), sourceId);
 	}
 
+	capPendingForSource(sourceId: string, keep: number): number {
+		const res = this.db
+			.prepare(
+				`UPDATE items SET analyzed_at = ?
+				 WHERE source_id = ? AND analyzed_at IS NULL AND id NOT IN (
+				   SELECT id FROM items WHERE source_id = ? AND analyzed_at IS NULL
+				   ORDER BY COALESCE(published_at, fetched_at) DESC, id DESC LIMIT ?
+				 )`,
+			)
+			.run(now(), sourceId, sourceId, keep);
+		return Number(res.changes);
+	}
+
 	sourceItemCount(sourceId: string): number {
 		const r = this.db.prepare("SELECT COUNT(*) AS n FROM items WHERE source_id = ?").get(sourceId) as any;
 		return Number(r.n);

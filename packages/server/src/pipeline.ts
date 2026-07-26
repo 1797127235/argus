@@ -12,14 +12,20 @@ import { loadInterests, loadModelSettings, ROOT } from "./config.js";
  */
 
 export async function runCollect(storage: StoragePort, config: ArgusConfig): Promise<CollectResult[]> {
-	const results = await collectSources(storage, config.sources);
+	const results = await collectSources(storage, config.sources, {
+		maxPendingPerSource: config.analysis.maxPendingPerSource,
+	});
 	for (const r of results) {
 		if (!r.ok) {
 			console.log(`  ✗ ${r.name}: ${r.error}`);
 		} else if (r.baseline) {
 			console.log(`  ○ ${r.name}: 首次抓取，建立静默基线（${r.newItems} 条历史不进入分析）`);
 		} else {
-			console.log(`  ✓ ${r.name}: 新增 ${r.newItems} 条`);
+			const notes = [
+				r.suppressed > 0 ? `积压超限，丢弃 ${r.suppressed} 条旧条目` : "",
+				r.viaFallback ? `经备用地址 ${r.viaFallback}` : "",
+			].filter(Boolean);
+			console.log(`  ✓ ${r.name}: 新增 ${r.newItems} 条${notes.length ? `（${notes.join("；")}）` : ""}`);
 		}
 	}
 	return results;

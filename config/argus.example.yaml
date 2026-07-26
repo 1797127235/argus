@@ -1,6 +1,15 @@
 # Argus 主配置：信息源、调度、分析行为、Web 服务
 # 模型密钥不在这里，放 .env（见 .env.example）
 
+# 镜像组：源 url 写成 "{组名}/路径" 即展开为组内各地址，
+# 第一个是主地址，其余在主地址失败时依次回退。
+# 多个源共用一个自建实例（如一堆 X 源都走同一台 RSSHub）时，
+# 换实例或加备用只改这一处，实例挂掉也不会整片哑掉。
+# mirrors:
+#   rsshub:
+#     - https://rsshub.example.com
+#     - https://rsshub-backup.example.com
+
 sources:
   - id: hn-best
     name: Hacker News 精选
@@ -67,6 +76,10 @@ analysis:
   excerptLength: 400
   # 达到该评分视为重大事件（预留给即时警报）
   alertThreshold: 9
+  # 单个源最多积压多少条待分析条目，超出的从旧到新静默丢弃。
+  # 兜底 backlog 突增：换 url、久禁重启、源批量回填历史时，
+  # 整批存量会一次性涌进 Analyst 挤掉真正的新消息。0 表示不限制。
+  maxPendingPerSource: 50
 
 server:
   host: 127.0.0.1

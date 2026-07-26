@@ -9,6 +9,11 @@ export interface SourceConfig {
 	name: string;
 	type: SourceType;
 	url: string;
+	/**
+	 * 备用地址，主地址抓取失败时依次尝试。
+	 * 可直接配置，也可由 url 里的 {镜像组} 占位符展开而来。
+	 */
+	fallbackUrls?: string[];
 	enabled: boolean;
 }
 
@@ -30,6 +35,12 @@ export interface AnalysisConfig {
 	excerptLength: number;
 	/** 达到该评分视为重大事件（预留给即时警报） */
 	alertThreshold: number;
+	/**
+	 * 单个源最多积压多少条待分析条目，超出的按时间从旧到新静默丢弃。
+	 * 防的是 backlog 突增：换 url、久禁重启、源大批回填历史时，
+	 * 整批存量会一次性涌进 Analyst 挤掉真正的新消息。
+	 */
+	maxPendingPerSource: number;
 }
 
 /** Web 服务配置 */
@@ -41,6 +52,12 @@ export interface ServerConfig {
 /** 主配置文件的完整结构 */
 export interface ArgusConfig {
 	sources: SourceConfig[];
+	/**
+	 * 镜像组：源 url 以 {组名} 开头时展开成该组各地址。
+	 * 第一个是主地址，其余进 fallbackUrls——多个源共用一个自建实例时，
+	 * 换实例只改这一处，也不会因单点故障同时哑掉。
+	 */
+	mirrors: Record<string, string[]>;
 	schedule: ScheduleConfig;
 	analysis: AnalysisConfig;
 	server: ServerConfig;

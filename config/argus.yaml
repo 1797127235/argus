@@ -1,6 +1,15 @@
 # Argus 主配置：信息源、调度、分析行为、Web 服务
 # 模型密钥不在这里，放 .env（见 .env.example）
 
+# 镜像组：源 url 写成 "{rsshub}/路径" 即展开为下列各地址，
+# 第一个是主地址，其余在主地址失败时依次回退。
+# 多个源共用一个自建实例时，换实例或加备用只改这一处。
+mirrors:
+  rsshub:
+    - https://rsshub.antest.cc.cd
+    # 再挂一个备用实例，避免单点故障时 X 源整片哑掉：
+    # - https://rsshub.example.com
+
 sources:
   - id: hn-best
     name: Hacker News 精选
@@ -60,42 +69,42 @@ sources:
   - id: x-mattpocock
     name: X @mattpocockuk
     type: rss
-    url: https://rsshub.antest.cc.cd/twitter/user/mattpocockuk
+    url: "{rsshub}/twitter/user/mattpocockuk"
     enabled: true
   - id: x-karpathy
     name: X @karpathy（Andrej Karpathy）
     type: rss
-    url: https://rsshub.antest.cc.cd/twitter/user/karpathy
+    url: "{rsshub}/twitter/user/karpathy"
     enabled: true
   - id: x-swyx
     name: X @swyx（AI 工程）
     type: rss
-    url: https://rsshub.antest.cc.cd/twitter/user/swyx
+    url: "{rsshub}/twitter/user/swyx"
     enabled: true
   - id: x-emollick
     name: X @emollick（Ethan Mollick）
     type: rss
-    url: https://rsshub.antest.cc.cd/twitter/user/emollick
+    url: "{rsshub}/twitter/user/emollick"
     enabled: true
   - id: x-badlogic
     name: X @badlogicgames（pi 作者）
     type: rss
-    url: https://rsshub.antest.cc.cd/twitter/user/badlogicgames
+    url: "{rsshub}/twitter/user/badlogicgames"
     enabled: true
   - id: x-openai
     name: X @OpenAI
     type: rss
-    url: https://rsshub.antest.cc.cd/twitter/user/OpenAI
+    url: "{rsshub}/twitter/user/OpenAI"
     enabled: true
   - id: x-anthropic
     name: X @AnthropicAI
     type: rss
-    url: https://rsshub.antest.cc.cd/twitter/user/AnthropicAI
+    url: "{rsshub}/twitter/user/AnthropicAI"
     enabled: true
   - id: x-deepmind
     name: X @GoogleDeepMind
     type: rss
-    url: https://rsshub.antest.cc.cd/twitter/user/GoogleDeepMind
+    url: "{rsshub}/twitter/user/GoogleDeepMind"
     enabled: true
   - id: lilianweng
     name: Lilian Weng 博客
@@ -135,37 +144,37 @@ sources:
   - id: x-dotey
     name: X @dotey（宝玉 · AI 落地实践）
     type: rss
-    url: https://rsshub.antest.cc.cd/twitter/user/dotey
+    url: "{rsshub}/twitter/user/dotey"
     enabled: true
   - id: x-guizang
     name: X @op7418（歸藏 · AIGC 工具实测）
     type: rss
-    url: https://rsshub.antest.cc.cd/twitter/user/op7418
+    url: "{rsshub}/twitter/user/op7418"
     enabled: true
   - id: x-huasheng
     name: X @AlchainHust（花生 · AI 编程落地）
     type: rss
-    url: https://rsshub.antest.cc.cd/twitter/user/AlchainHust
+    url: "{rsshub}/twitter/user/AlchainHust"
     enabled: true
   - id: x-nickfloats
     name: X @nickfloats（Nick St. Pierre · AI 视觉创作）
     type: rss
-    url: https://rsshub.antest.cc.cd/twitter/user/nickfloats
+    url: "{rsshub}/twitter/user/nickfloats"
     enabled: true
   - id: x-fofr
     name: X @fofrAI（fofr · 生成模型玩法实验）
     type: rss
-    url: https://rsshub.antest.cc.cd/twitter/user/fofrAI
+    url: "{rsshub}/twitter/user/fofrAI"
     enabled: true
   - id: x-venturetwins
     name: X @venturetwins（Justine Moore · AI 创意工具趋势）
     type: rss
-    url: https://rsshub.antest.cc.cd/twitter/user/venturetwins
+    url: "{rsshub}/twitter/user/venturetwins"
     enabled: true
   - id: x-hidecloud
     name: X @hidecloud（海辛 · AI 视频/动画创作）
     type: rss
-    url: https://rsshub.antest.cc.cd/twitter/user/hidecloud
+    url: "{rsshub}/twitter/user/hidecloud"
     enabled: true
 
 schedule:
@@ -187,6 +196,10 @@ analysis:
   excerptLength: 400
   # 达到该评分视为重大事件（预留给即时警报）
   alertThreshold: 9
+  # 单个源最多积压多少条待分析条目，超出的从旧到新静默丢弃。
+  # 兜底 backlog 突增：换 url、久禁重启、源批量回填历史时，
+  # 整批存量会一次性涌进 Analyst 挤掉真正的新消息。0 表示不限制。
+  maxPendingPerSource: 50
 
 server:
   host: 127.0.0.1

@@ -26,6 +26,11 @@ export interface StoragePort {
 	markItemsAnalyzed(ids: number[]): void;
 	/** 把某个源的全部未分析条目直接标记为已分析（静默基线用） */
 	markSourceAnalyzed(sourceId: string): void;
+	/**
+	 * 只保留某个源最新的 keep 条待分析条目，更旧的静默标记为已分析。
+	 * 返回被丢弃的条数。用于给 backlog 突增兜底。
+	 */
+	capPendingForSource(sourceId: string, keep: number): number;
 	sourceItemCount(sourceId: string): number;
 
 	// ---- 事件 ----
