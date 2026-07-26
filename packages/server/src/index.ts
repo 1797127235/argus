@@ -58,8 +58,9 @@ async function main(): Promise<void> {
 				break;
 			}
 			case "serve": {
-				const app = createApi(storage, config);
-				const jobs = startScheduler(storage, config);
+				// 调度器先起，API 才能报下次运行时刻
+				const scheduler = startScheduler(storage, config);
+				const app = createApi(storage, config, scheduler);
 				const server = serve(
 					{ fetch: app.fetch, hostname: config.server.host, port: config.server.port },
 					(info) => {
@@ -68,7 +69,7 @@ async function main(): Promise<void> {
 				);
 				const shutdown = () => {
 					console.log("\n正在退出…");
-					for (const job of jobs) job.stop();
+					scheduler.stop();
 					server.close();
 					storage.close();
 					process.exit(0);

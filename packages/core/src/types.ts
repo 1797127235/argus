@@ -125,6 +125,25 @@ export interface FeedbackEntry {
 	createdAt: string;
 }
 
+/** 事件列表的查询条件（监控台的搜索与筛选） */
+export interface StoryQuery {
+	/** 标题/摘要关键词，空表示不过滤 */
+	query?: string;
+	/** 只看某个状态 */
+	status?: StoryStatus;
+	/** 最低重要度 */
+	minScore?: number;
+	limit: number;
+	offset: number;
+}
+
+/** 分页结果：当前页数据 + 满足条件的总数 */
+export interface StoryPage {
+	stories: Story[];
+	/** 满足筛选条件的总数（不受 limit/offset 影响） */
+	total: number;
+}
+
 /** 一次 agent 运行的记录（监控层展示用） */
 export interface AgentRunLog {
 	id: number;

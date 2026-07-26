@@ -1,52 +1,56 @@
-import type { Brief } from "@argus/core";
-import { marked } from "marked";
 import { useEffect, useState } from "react";
-import { api, timeAgo } from "../api.js";
+import { absTime, api, timeAgo } from "../api.js";
+import { useAsync } from "../hooks.js";
+import { EmptyState, ErrorState, Markdown, Skeleton } from "./common.js";
 
-/** 简报列表 + 阅读视图 */
-export function BriefsView() {
-	const [briefs, setBriefs] = useState<Brief[]>([]);
-	const [selected, setSelected] = useState<Brief | null>(null);
-	const [error, setError] = useState<string | null>(null);
+/** 简报列表 + 阅读视图。每 2 分钟自动刷新一次列表 */
+export function BriefsView({ refreshToken }: { refreshToken: number }) {
+	const { data, loading, error, refresh } = useAsync(() => api.briefs(), [refreshToken], 120_000);
+	const [selectedId, setSelectedId] = useState<number | null>(null);
 
+	const briefs = data ?? [];
+	// 默认选中最新一期；已选中的那期若还在列表里就保持不动，避免刷新时跳走
 	useEffect(() => {
-		api
-			.briefs()
-			.then((list) => {
-				setBriefs(list);
-				if (list.length > 0) setSelected(list[0]);
-			})
-			.catch((e) => setError(String(e)));
-	}, []);
+		if (briefs.length === 0) return;
+		if (selectedId === null || !briefs.some((b) => b.id === selectedId)) {
+			setSelectedId(briefs[0].id);
+		}
+	}, [briefs, selectedId]);
 
-	if (error) return <p className="empty">加载失败：{error}</p>;
+	if (loading) return <Skeleton rows={4} />;
+	if (error && briefs.length === 0) return <ErrorState message={error} onRetry={refresh} />;
 	if (briefs.length === 0) {
-		return <p className="empty">还没有简报。运行 npm run argus -- run 生成第一期。</p>;
+		return (
+			<EmptyState
+				title="还没有简报"
+				hint="Editor 会在配置的简报时刻生成；也可以手动运行 npm run argus -- brief"
+			/>
+		);
 	}
 
+	const selected = briefs.find((b) => b.id === selectedId) ?? briefs[0];
+
 	return (
-		<div className="briefs">
-			<div className="brief-list">
+		<div className="split">
+			<nav className="split-list" aria-label="简报列表">
 				{briefs.map((b) => (
 					<button
+						type="button"
 						key={b.id}
-						className={selected?.id === b.id ? "brief-item active" : "brief-item"}
-						onClick={() => setSelected(b)}
+						className={selected.id === b.id ? "card card-pick is-active" : "card card-pick"}
+						onClick={() => setSelectedId(b.id)}
+						aria-current={selected.id === b.id}
 					>
-						<span className="brief-title">简报 #{b.id}</span>
-						<span className="brief-meta">
-							{new Date(b.createdAt).toLocaleString("zh-CN")} · {b.storyIds.length} 个事件 · {timeAgo(b.createdAt)}
+						<span className="card-title">简报 #{b.id}</span>
+						<span className="card-meta" title={absTime(b.createdAt)}>
+							{timeAgo(b.createdAt)} · {b.storyIds.length} 个事件
 						</span>
 					</button>
 				))}
-			</div>
-			{selected && (
-				<article
-					className="brief-content markdown"
-					// 内容来自本地 Editor agent 的产出，仅本机使用
-					dangerouslySetInnerHTML={{ __html: marked.parse(selected.content, { async: false }) }}
-				/>
-			)}
+			</nav>
+			<article className="split-detail panel">
+				<Markdown content={selected.content} />
+			</article>
 		</div>
 	);
 }

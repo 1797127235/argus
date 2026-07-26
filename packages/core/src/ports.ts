@@ -6,6 +6,8 @@ import type {
 	NewItem,
 	SourceHealth,
 	Story,
+	StoryPage,
+	StoryQuery,
 	StoryStatus,
 	StoryWithItems,
 } from "./types.js";
@@ -36,6 +38,8 @@ export interface StoragePort {
 	// ---- 事件 ----
 	listActiveStories(): Story[];
 	listStories(limit: number): Story[];
+	/** 带搜索/筛选/分页的事件查询，供监控台使用 */
+	searchStories(query: StoryQuery): StoryPage;
 	getStory(id: number): Story | null;
 	getStoryWithItems(id: number): StoryWithItems | null;
 	createStory(input: { title: string; summary: string; status: StoryStatus; score: number }): Story;
@@ -53,7 +57,15 @@ export interface StoragePort {
 	lastBriefAt(): string | null;
 
 	// ---- 反馈 ----
-	addFeedback(storyId: number, verdict: "up" | "down", comment: string | null): void;
+	/**
+	 * 设置用户对某事件的反馈。单用户系统，一个事件只保留一条：
+	 * 重复提交是覆盖而非追加，因此接口天然幂等。
+	 */
+	setFeedback(storyId: number, verdict: "up" | "down", comment: string | null): void;
+	/** 取某事件的反馈，没有则为 null */
+	getFeedback(storyId: number): FeedbackEntry | null;
+	/** 撤销某事件的反馈 */
+	clearFeedback(storyId: number): void;
 	listRecentFeedback(limit: number): (FeedbackEntry & { storyTitle: string })[];
 
 	// ---- 源健康 ----

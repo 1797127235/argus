@@ -10,6 +10,8 @@ import type {
 	SourceHealth,
 	StoragePort,
 	Story,
+	StoryPage,
+	StoryQuery,
 	StoryStatus,
 	StoryWithItems,
 } from "@argus/core";
@@ -43,6 +45,16 @@ function rowToStory(r: any): Story {
 		score: Number(r.score),
 		createdAt: String(r.created_at),
 		updatedAt: String(r.updated_at),
+	};
+}
+
+function rowToFeedback(r: any): FeedbackEntry {
+	return {
+		id: Number(r.id),
+		storyId: Number(r.story_id),
+		verdict: String(r.verdict) as "up" | "down",
+		comment: r.comment === null ? null : String(r.comment),
+		createdAt: String(r.created_at),
 	};
 }
 
@@ -148,6 +160,33 @@ export class SqliteStorage implements StoragePort {
 		return rows.map(rowToStory);
 	}
 
+	searchStories(q: StoryQuery): StoryPage {
+		// 条件按需拼装，参数一律走占位符
+		const where: string[] = [];
+		const params: (string | number)[] = [];
+		if (q.query?.trim()) {
+			where.push("(title LIKE ? ESCAPE '\\' OR summary LIKE ? ESCAPE '\\')");
+			// 转义 LIKE 通配符，否则用户搜 "100%" 会匹配到一切
+			const pattern = `%${q.query.trim().replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+			params.push(pattern, pattern);
+		}
+		if (q.status) {
+			where.push("status = ?");
+			params.push(q.status);
+		}
+		if (q.minScore !== undefined) {
+			where.push("score >= ?");
+			params.push(q.minScore);
+		}
+		const clause = where.length > 0 ? `WHERE ${where.join(" AND ")}` : "";
+
+		const totalRow = this.db.prepare(`SELECT COUNT(*) AS n FROM stories ${clause}`).get(...params) as any;
+		const rows = this.db
+			.prepare(`SELECT * FROM stories ${clause} ORDER BY updated_at DESC LIMIT ? OFFSET ?`)
+			.all(...params, q.limit, q.offset);
+		return { stories: rows.map(rowToStory), total: Number(totalRow.n) };
+	}
+
 	getStory(id: number): Story | null {
 		const r = this.db.prepare("SELECT * FROM stories WHERE id = ?").get(id);
 		return r ? rowToStory(r) : null;
@@ -166,15 +205,7 @@ export class SqliteStorage implements StoragePort {
 		const feedback = this.db
 			.prepare("SELECT * FROM feedback WHERE story_id = ? ORDER BY created_at DESC")
 			.all(id)
-			.map(
-				(r: any): FeedbackEntry => ({
-					id: Number(r.id),
-					storyId: Number(r.story_id),
-					verdict: String(r.verdict) as "up" | "down",
-					comment: r.comment === null ? null : String(r.comment),
-					createdAt: String(r.created_at),
-				}),
-			);
+			.map(rowToFeedback);
 		return { story, items, feedback };
 	}
 
@@ -243,10 +274,23 @@ export class SqliteStorage implements StoragePort {
 
 	// ---- 反馈 ----
 
-	addFeedback(storyId: number, verdict: "up" | "down", comment: string | null): void {
+	setFeedback(storyId: number, verdict: "up" | "down", comment: string | null): void {
+		// 单用户系统，一个事件只保留最新一条：先删后插，重复提交不会堆积
+		this.db.prepare("DELETE FROM feedback WHERE story_id = ?").run(storyId);
 		this.db
 			.prepare("INSERT INTO feedback (story_id, verdict, comment, created_at) VALUES (?, ?, ?, ?)")
 			.run(storyId, verdict, comment, now());
+	}
+
+	getFeedback(storyId: number): FeedbackEntry | null {
+		const r = this.db
+			.prepare("SELECT * FROM feedback WHERE story_id = ? ORDER BY id DESC LIMIT 1")
+			.get(storyId);
+		return r ? rowToFeedback(r) : null;
+	}
+
+	clearFeedback(storyId: number): void {
+		this.db.prepare("DELETE FROM feedback WHERE story_id = ?").run(storyId);
 	}
 
 	listRecentFeedback(limit: number): (FeedbackEntry & { storyTitle: string })[] {
