@@ -62,6 +62,51 @@ sources:
     type: rss
     url: https://rsshub.antest.cc.cd/twitter/user/mattpocockuk
     enabled: true
+  - id: x-karpathy
+    name: X @karpathy（Andrej Karpathy）
+    type: rss
+    url: https://rsshub.antest.cc.cd/twitter/user/karpathy
+    enabled: true
+  - id: x-swyx
+    name: X @swyx（AI 工程）
+    type: rss
+    url: https://rsshub.antest.cc.cd/twitter/user/swyx
+    enabled: true
+  - id: x-emollick
+    name: X @emollick（Ethan Mollick）
+    type: rss
+    url: https://rsshub.antest.cc.cd/twitter/user/emollick
+    enabled: true
+  - id: x-badlogic
+    name: X @badlogicgames（pi 作者）
+    type: rss
+    url: https://rsshub.antest.cc.cd/twitter/user/badlogicgames
+    enabled: true
+  - id: x-openai
+    name: X @OpenAI
+    type: rss
+    url: https://rsshub.antest.cc.cd/twitter/user/OpenAI
+    enabled: true
+  - id: x-anthropic
+    name: X @AnthropicAI
+    type: rss
+    url: https://rsshub.antest.cc.cd/twitter/user/AnthropicAI
+    enabled: true
+  - id: x-deepmind
+    name: X @GoogleDeepMind
+    type: rss
+    url: https://rsshub.antest.cc.cd/twitter/user/GoogleDeepMind
+    enabled: true
+  - id: lilianweng
+    name: Lilian Weng 博客
+    type: rss
+    url: https://lilianweng.github.io/index.xml
+    enabled: true
+  - id: raschka
+    name: Sebastian Raschka（Ahead of AI）
+    type: rss
+    url: https://magazine.sebastianraschka.com/feed
+    enabled: true
 
 schedule:
   # 采集 + 分析的轮询间隔（分钟）
