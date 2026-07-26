@@ -65,6 +65,10 @@ npm run serve
 
 ## 架构
 
+![Argus 架构图](docs/architecture.jpg)
+
+（源文件 [docs/architecture.tldr](docs/architecture.tldr)，可用 [tldraw](https://www.tldraw.com/) 打开编辑）
+
 六个解耦的 workspace 包，依赖单向流动：
 
 ```
