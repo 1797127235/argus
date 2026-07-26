@@ -47,6 +47,16 @@ sources:
     type: rss
     url: https://www.infoq.cn/feed
     enabled: true
+  - id: aihero
+    name: AI Hero（Matt Pocock）
+    type: rss
+    url: https://www.aihero.dev/rss.xml
+    enabled: true
+  - id: totaltypescript
+    name: Total TypeScript（Matt Pocock）
+    type: rss
+    url: https://www.totaltypescript.com/rss.xml
+    enabled: true
 
 schedule:
   # 采集 + 分析的轮询间隔（分钟）
