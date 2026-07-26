@@ -147,6 +147,26 @@ sources:
     type: rss
     url: https://rsshub.antest.cc.cd/twitter/user/AlchainHust
     enabled: true
+  - id: x-nickfloats
+    name: X @nickfloats（Nick St. Pierre · AI 视觉创作）
+    type: rss
+    url: https://rsshub.antest.cc.cd/twitter/user/nickfloats
+    enabled: true
+  - id: x-fofr
+    name: X @fofrAI（fofr · 生成模型玩法实验）
+    type: rss
+    url: https://rsshub.antest.cc.cd/twitter/user/fofrAI
+    enabled: true
+  - id: x-venturetwins
+    name: X @venturetwins（Justine Moore · AI 创意工具趋势）
+    type: rss
+    url: https://rsshub.antest.cc.cd/twitter/user/venturetwins
+    enabled: true
+  - id: x-hidecloud
+    name: X @hidecloud（海辛 · AI 视频/动画创作）
+    type: rss
+    url: https://rsshub.antest.cc.cd/twitter/user/hidecloud
+    enabled: true
 
 schedule:
   # 采集 + 分析的轮询间隔（分钟）
